@@ -38,7 +38,7 @@ public class Config extends ResourceDistributor.SingletonResource {
             return;
         }
         start.getResourceDistributor().setResource(RESOURCE_KEY, new Config(start, configFilePath, logLevels));
-        Logging.info(start, "Loading PostgreSQL config.", true); // change message
+        Logging.info(start, "Loading ScyllaDB config.", true);
     }
 
     public static ScyllaDBConfig getConfig(Start start)  throws QuitProgramFromPluginException {

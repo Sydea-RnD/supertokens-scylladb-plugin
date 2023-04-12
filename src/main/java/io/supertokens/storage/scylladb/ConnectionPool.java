@@ -1,7 +1,9 @@
 package io.supertokens.storage.scylladb;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+// turns out that Hikari is pretty much useless for our case, as JDBC is basically only for SQL DBs.
+// import com.zaxxer.hikari.HikariConfig;
+// import com.zaxxer.hikari.HikariDataSource;
+
 import io.supertokens.pluginInterface.exceptions.QuitProgramFromPluginException;
 import io.supertokens.storage.scylladb.config.Config;
 import io.supertokens.storage.scylladb.config.ScyllaDBConfig;
@@ -13,12 +15,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Objects;
 
-// i have to modify every SQLException and SQL related exceptions from here.
+/*
+* Basically we have to modify the entire class, as it uses Hikari for the connection to the database.
+* Since Hikari is a JDBC Connection pool, it is no useful to us. JDBC is for SQL Databases.
+*/
 
 public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
     private static final String RESOURCE_KEY = "io.supertokens.storage.scylladb.ConnectionPool";
-    private static HikariDataSource hikariDataSource = null;
+    // private static HikariDataSource hikariDataSource = null;
 
     private ConnectionPool(Start start) {
         if (!start.enabled) {
@@ -36,10 +41,11 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
             return;
         }
 
-        HikariConfig config = new HikariConfig();
-        
+        // HikariConfig config = new HikariConfig();
+
         ScyllaDBConfig userConfig = Config.getConfig(start);
-        config.setDriverClassName("org.scylladb.Driver");
+
+        // config.setDriverClassName("org.scylladb.Driver");
 
         String hostName = userConfig.getHostName();
 
@@ -58,25 +64,28 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
         }
 
         if (userConfig.getUser() != null) {
-            config.setUsername(userConfig.getUser());
+            // config.setUsername(userConfig.getUser());
         }
 
         if (userConfig.getPassword() != null && !userConfig.getPassword().equals("")) {
-            config.setPassword(userConfig.getPassword());
+            // config.setPassword(userConfig.getPassword());
         }
 
-        config.setMaximumPoolSize(userConfig.getConnectionPoolSize());
-        config.setConnectionTimeout(5000);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        // config.setMaximumPoolSize(userConfig.getConnectionPoolSize());
+        // config.setConnectionTimeout(5000);
+        // config.addDataSourceProperty("cachePrepStmts", "true");
+        // config.addDataSourceProperty("prepStmtCacheSize", "250");
+        // config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
         // TODO: set maxLifetimeValue to lesser than 10 mins so that the following error doesnt happen:
         // io.supertokens.storage.postgresql.HikariLoggingAppender.doAppend(HikariLoggingAppender.java:117) |
         // SuperTokens
         // - Failed to validate connection org.mariadb.jdbc.MariaDbConnection@79af83ae (Connection.setNetworkTimeout
         // cannot be called on a closed connection). Possibly consider using a shorter maxLifetime value.
-        config.setPoolName("SuperTokens");
-        hikariDataSource = new HikariDataSource(config);
+
+        // config.setPoolName("SuperTokens");
+
+        // hikariDataSource = new HikariDataSource(config);
     }
 
     private static int getTimeToWaitToInit(Start start) {

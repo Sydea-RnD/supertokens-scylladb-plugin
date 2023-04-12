@@ -68,12 +68,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.sql.Connection;
-import java.sql.SQLException; // how to substitute with a noSQLException?
-import java.sql.SQLTransactionRollbackException; // same thing here
+import java.sql.SQLException;
+import java.sql.SQLTransactionRollbackException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+// TODO: throw away everything related to Hikari, as it is not useful to noSQL dbs
 
 public class Start
         implements SessionSQLStorage, EmailPasswordSQLStorage, EmailVerificationSQLStorage, ThirdPartySQLStorage,
@@ -302,14 +304,7 @@ public class Start
 
     @Override
     public void removeLegacyAccessTokenSigningKey_Transaction(TransactionConnection con) throws StorageQueryException {
-        // will modify to execute the call to the webservice.
-        /**
-         * 1. getConnection will remain, the thing is that it will change to create a connection with the webservice
-         *    rather than directly with the database.
-         * 2. The execution through GeneralQueries will execute the actual call to the webservice. So the execute()
-         *    method will be modified.
-         * */
-        
+
         Connection sqlCon = (Connection) con.getConnection();
         try {
             GeneralQueries.deleteKeyValue_Transaction(this, sqlCon, ACCESS_TOKEN_SIGNING_KEY_NAME);

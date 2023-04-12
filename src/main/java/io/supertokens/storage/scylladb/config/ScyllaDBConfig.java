@@ -24,6 +24,12 @@ public class ScyllaDBConfig {
     @JsonProperty
     private String scylladb_password = String();
 
+    @JsonProperty
+    private String scylladb_region = String();
+
+    @JsonProperty
+    private int scylladb_payload_max_size = Int();
+
     public int getConnectionPoolSize() {
         return postgresql_connection_pool_size;
     }
