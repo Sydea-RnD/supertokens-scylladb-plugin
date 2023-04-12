@@ -1,0 +1,35 @@
+plugins { 
+  id 'java-library'
+}
+
+repositories {
+  mavenCentral()
+}
+
+version = '0.0.1'
+
+dependencies {
+  
+  compileOnly project(":supertokens-plugin-interface")
+  
+  implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
+  implementation group: 'com.scylladb', name: 'java-driver-core', version: '4.14.1.0'
+  implementation group: 'com.scylladb', name: 'java-driver-query-builder', version: '4.14.1.0'
+  implementation group: 'com.scylladb', name: 'java-driver-mapper-runtime', version: '4.14.1.0'
+  
+  compileOnly group: 'com.fasterxml.dataformat', name: 'jackson-dataformat-yaml', version: '2.14.0'
+  compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0'
+  compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+  compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+  compileOnly group: 'org.jetbrains', name: 'annotations', version: '13.0'
+  compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+
+}
+
+jar {
+  archiveBaseName.set('scylladb-plugin')
+}
+
+def interfaceName = 'io.supertokens.pluginInterface.Storage'
+def className = 'io.supertokens.storage.scylladb.Start'
+def pluginName = 'scylladb'
