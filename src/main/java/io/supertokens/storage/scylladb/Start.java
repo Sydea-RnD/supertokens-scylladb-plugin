@@ -56,7 +56,7 @@ import io.supertokens.pluginInterface.userroles.exception.DuplicateUserRoleMappi
 import io.supertokens.pluginInterface.userroles.exception.UnknownRoleException;
 import io.supertokens.pluginInterface.userroles.sqlStorage.UserRolesSQLStorage;
 import io.supertokens.storage.postgresql.config.Config;
-import io.supertokens.storage.postgresql.config.PostgreSQLConfig;
+import io.supertokens.storage.postgresql.config.ScyllaDBConfig  ;
 import io.supertokens.storage.postgresql.output.Logging;
 import io.supertokens.storage.postgresql.queries.*;
 import org.jetbrains.annotations.NotNull;
@@ -119,6 +119,7 @@ public class Start
         Config.loadConfig(this, configFilePath, logLevels);
     }
 
+    // Since we ain't using Hikari no more, we have to find a new way to log
     @Override
     public void initFileLogging(String infoLogPath, String errorLogPath) {
         Logging.initFileLogging(this, infoLogPath, errorLogPath);
@@ -288,7 +289,6 @@ public class Start
         } catch (SQLException e) {
             throw new StorageQueryException(e);
         }
-
     }
 
     @Override
