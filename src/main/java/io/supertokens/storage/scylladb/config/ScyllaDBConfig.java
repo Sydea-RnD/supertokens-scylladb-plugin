@@ -9,11 +9,6 @@ import java.net.URI;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ScyllaDBConfig {
 
-    // these are all the properties that are used to create/connect and use the database.
-    // Will have to create scylladb's properties. [DONE]
-    // TODO: Will probably have to modify the methods down too.
-
-
     @JsonProperty
     private boolean isHosted = false;
 
@@ -29,84 +24,11 @@ public class ScyllaDBConfig {
     @JsonProperty
     private String scylladb_password = String();
 
-
-    /**
-    @JsonProperty
-    private int postgresql_config_version = -1;
-
-    @JsonProperty
-    private int postgresql_connection_pool_size = 10;
-
-    @JsonProperty
-    private String postgresql_host = null;
-
-    @JsonProperty
-    private int postgresql_port = -1;
-
-    @JsonProperty
-    private String postgresql_user = null;
-
-    @JsonProperty
-    private String postgresql_password = null;
-
-    @JsonProperty
-    private String postgresql_database_name = null;
-
-    @JsonProperty
-    private String postgresql_key_value_table_name = null;
-
-    @JsonProperty
-    private String postgresql_session_info_table_name = null;
-
-    @JsonProperty
-    private String postgresql_emailpassword_users_table_name = null;
-
-    @JsonProperty
-    private String postgresql_emailpassword_pswd_reset_tokens_table_name = null;
-
-    @JsonProperty
-    private String postgresql_emailverification_tokens_table_name = null;
-
-    @JsonProperty
-    private String postgresql_emailverification_verified_emails_table_name = null;
-
-    @JsonProperty
-    private String postgresql_thirdparty_users_table_name = null;
-
-    @JsonProperty
-    private String postgresql_table_names_prefix = "";
-
-    @JsonProperty
-    private String postgresql_table_schema = "public";
-
-    @JsonProperty
-    private String postgresql_connection_uri = null;
-
-     */
-    public String getTableSchema() {
-        return postgresql_table_schema;
-    }
-
     public int getConnectionPoolSize() {
         return postgresql_connection_pool_size;
     }
 
-    public String getConnectionScheme() {
-
-        if (postgresql_connection_uri != null) {
-            URI uri = URI.create(postgresql_connection_uri);
-
-            // sometimes if the scheme is missing, the host is returned as the scheme. To
-            // prevent that,
-            // we have a check
-            String host = this.getHostName();
-            if (uri.getScheme() != null && !uri.getScheme().equals(host)) {
-                return uri.getScheme();
-            }
-        }
-        return "postgresql";
-    }
-
+    // TODO: modify this function to work with scylla nodes (maybe it is not even useful to us.)
     public String getConnectionAttributes() {
         if (postgresql_connection_uri != null) {
             URI uri = URI.create(postgresql_connection_uri);
@@ -123,6 +45,9 @@ public class ScyllaDBConfig {
     }
 
     public String getHostName() {
+
+        // here i'll have to return the X nodes?
+
         if (postgresql_host == null) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);
@@ -136,6 +61,9 @@ public class ScyllaDBConfig {
     }
 
     public int getPort() {
+
+        // here i'll have to return an array of the ports of the scylla nodes
+
         if (postgresql_port == -1) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);
@@ -147,6 +75,7 @@ public class ScyllaDBConfig {
     }
 
     public String getUser() {
+        // self explanatory
         if (postgresql_user == null) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);
@@ -164,6 +93,7 @@ public class ScyllaDBConfig {
     }
 
     public String getPassword() {
+        // self explanatory
         if (postgresql_password == null) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);
@@ -181,6 +111,7 @@ public class ScyllaDBConfig {
     }
 
     public String getDatabaseName() {
+        // scyllaDBs instances don't really have a name...
         if (postgresql_database_name == null) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);

@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
-    private static final String RESOURCE_KEY = "io.supertokens.storage.postgresql.ConnectionPool"; // change to scylladb?
+    private static final String RESOURCE_KEY = "io.supertokens.storage.scylladb.ConnectionPool";
     private static HikariDataSource hikariDataSource = null;
 
     private ConnectionPool(Start start) {
@@ -41,8 +41,6 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
         ScyllaDBConfig userConfig = Config.getConfig(start);
         config.setDriverClassName("org.scylladb.Driver");
 
-        String scheme = userConfig.getConnectionScheme();
-
         String hostName = userConfig.getHostName();
 
         String port = userConfig.getPort() + "";
@@ -59,10 +57,6 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
             attributes = "?" + attributes;
         }
 
-        // For this one i gotta read some docs of scylla's java driver 
-        // Remember that scylla db is not always something local, so could be that there are two ways of connecting to it.
-        config.setJdbcUrl("jdbc:" + scheme + "://" + hostName + port + "/" + databaseName + attributes);
-
         if (userConfig.getUser() != null) {
             config.setUsername(userConfig.getUser());
         }
@@ -70,6 +64,7 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
         if (userConfig.getPassword() != null && !userConfig.getPassword().equals("")) {
             config.setPassword(userConfig.getPassword());
         }
+
         config.setMaximumPoolSize(userConfig.getConnectionPoolSize());
         config.setConnectionTimeout(5000);
         config.addDataSourceProperty("cachePrepStmts", "true");
