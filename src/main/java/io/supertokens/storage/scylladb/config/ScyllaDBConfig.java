@@ -6,6 +6,9 @@ import io.supertokens.pluginInterface.exceptions.QuitProgramFromPluginException;
 
 import java.net.URI;
 
+// ScyllaDBConfig needs to have a method that returns an ArrayList<InetSocketAddress> which can be used
+// to create a CqlSession in ConnectionPool.java
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ScyllaDBConfig {
 
@@ -13,22 +16,22 @@ public class ScyllaDBConfig {
     private boolean isHosted = false;
 
     @JsonProperty
-    private String[] scylladb_nodes = {};
+    private String[] scylladb_nodes = null;
 
     @JsonProperty
-    private String scylladb_hosted_zone = String();
+    private String scylladb_hosted_zone = null;
 
     @JsonProperty
-    private String scylladb_user = String();
+    private String scylladb_user = null;
 
     @JsonProperty
-    private String scylladb_password = String();
+    private String scylladb_password = null;
 
     @JsonProperty
-    private String scylladb_region = String();
+    private String scylladb_region = null;
 
     @JsonProperty
-    private int scylladb_payload_max_size = Int();
+    private int scylladb_payload_max_size = null;
 
     public int getConnectionPoolSize() {
         return postgresql_connection_pool_size;
@@ -64,6 +67,24 @@ public class ScyllaDBConfig {
             return "localhost";
         }
         return postgresql_host;
+    }
+
+    public ArrayList<InetSocketAddress> getScyllaNodes() {
+
+        ArrayList<InetSocketAddress> scyllaNodes = new ArrayList<>();
+        try {
+            for (String node : this.scylladb_nodes) {
+                // split for :
+                // get url, port
+                String nodeUrl = node.split(":")[0];
+                String nodePort = node.split(":")[1];
+
+                scyllaNodes.add(new InetSocketAddress(InetAddress.getByName(nodeUrl).toString().split("/")[1], nodePort.toInteger()));
+            }
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     public int getPort() {

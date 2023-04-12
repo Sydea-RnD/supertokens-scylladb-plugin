@@ -9,11 +9,20 @@ import io.supertokens.storage.scylladb.config.Config;
 import io.supertokens.storage.scylladb.config.ScyllaDBConfig;
 import io.supertokens.storage.postgresql.output.Logging;
 
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.auth.ProgrammaticPlainTextAuthProvider;
+import com.datastax.oss.driver.api.core.cql.*;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Objects;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.net.InetSocketAddress;
+
 
 /*
 * Basically we have to modify the entire class, as it uses Hikari for the connection to the database.
@@ -23,29 +32,14 @@ import java.util.Objects;
 public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
     private static final String RESOURCE_KEY = "io.supertokens.storage.scylladb.ConnectionPool";
-    // private static HikariDataSource hikariDataSource = null;
+    private static final CqlSession session = null;
 
     private ConnectionPool(Start start) {
         if (!start.enabled) {
             throw new RuntimeException("Connection to refused"); // emulates exception thrown by Hikari
         }
 
-        if (ConnectionPool.hikariDataSource != null) {
-            // This implies that it was already created before and that
-            // there is no need to create Hikari again.
-
-            // If ConnectionPool.hikariDataSource == null, it implies that
-            // either the config file had changed somehow (which means the plugin JAR was reloaded, resulting in static
-            // variables to be set to null), or it means that this is the first time we are trying to connect to a db
-            // (applicable only for testing).
-            return;
-        }
-
-        // HikariConfig config = new HikariConfig();
-
         ScyllaDBConfig userConfig = Config.getConfig(start);
-
-        // config.setDriverClassName("org.scylladb.Driver");
 
         String hostName = userConfig.getHostName();
 
@@ -71,21 +65,10 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
             // config.setPassword(userConfig.getPassword());
         }
 
-        // config.setMaximumPoolSize(userConfig.getConnectionPoolSize());
-        // config.setConnectionTimeout(5000);
-        // config.addDataSourceProperty("cachePrepStmts", "true");
-        // config.addDataSourceProperty("prepStmtCacheSize", "250");
-        // config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
-        // TODO: set maxLifetimeValue to lesser than 10 mins so that the following error doesnt happen:
-        // io.supertokens.storage.postgresql.HikariLoggingAppender.doAppend(HikariLoggingAppender.java:117) |
-        // SuperTokens
-        // - Failed to validate connection org.mariadb.jdbc.MariaDbConnection@79af83ae (Connection.setNetworkTimeout
-        // cannot be called on a closed connection). Possibly consider using a shorter maxLifetime value.
-
-        // config.setPoolName("SuperTokens");
-
-        // hikariDataSource = new HikariDataSource(config);
+        this.session = CqlSession.builder()
+                .withAuthProvider(new ProgrammaticPlainTextAuthProvider(userConfig.getUser(), userConfig.getPassword())
+                .withLocalDataCenter(userConfig.getLocalDataCenter())
+                .addContactPoints(userConfig.getScyllaNodes()).build());
     }
 
     private static int getTimeToWaitToInit(Start start) {
