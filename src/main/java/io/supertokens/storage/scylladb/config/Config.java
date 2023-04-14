@@ -23,7 +23,7 @@ public class Config extends ResourceDistributor.SingletonResource {
         this.start = start;
         this.logLevels = logLevels;
         try {
-            config = loadScyllaDBConfig(configFilePath);
+            this.config = loadScyllaDBConfig(configFilePath);
         } catch (IOException e) {
             throw new QuitProgramFromPluginException(e);
         }
@@ -52,7 +52,6 @@ public class Config extends ResourceDistributor.SingletonResource {
         return getInstance(start).logLevels;
     }
 
-    // see canBeUsed(...)
     private ScyllaDBConfig loadScyllaDBConfig(String configFilePath) throws IOException {
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         ScyllaDBConfig config = mapper.readValue(new File(configFilePath), ScyllaDBConfig.class);
@@ -60,6 +59,7 @@ public class Config extends ResourceDistributor.SingletonResource {
         return config;
     }
 
+    // verifies if the yaml file is to standard
     public static boolean canBeUsed(String configFilePath) {
         try {
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

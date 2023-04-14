@@ -33,9 +33,47 @@ public class ScyllaDBConfig {
     @JsonProperty
     private int scylladb_payload_max_size = null;
 
+    @JsonProperty
+    private String scylladb_key_value_table_name = null;
+
+    @JsonProperty
+    private String scylladb_session_info_table_name = null;
+
+    @JsonProperty
+    private String scylladb_emailpassword_users_table_name = null;
+
+    @JsonProperty
+    private String scylladb_emailverification_tokens_table_name = null;
+
+    @JsonProperty
+    private String scylladb_emailverification_verified_emails_table_name = null;
+
+    @JsonProperty
+    private String scylladb_emailpassword_pswd_reset_tokens_table_name = null;
+
+    @JsonProperty
+    private String scylladb_thirdparty_users_table_name = null;
+
+    @JsonProperty
+    private String scylladb_table_names_prefix = null;
+
+    @JsonProperty
+    private int scylladb_db_parallelism = null;
+
+    @JsonProperty
+    private int scylladb_parallel_files = null;
+
+    @JsonProperty
+    private String scylladb_host = null;
+
+    @JsonProperty
+    private int scylladb_port = null;
+
+    /*
     public int getConnectionPoolSize() {
         return postgresql_connection_pool_size;
     }
+    */
 
     // TODO: modify this function to work with scylla nodes (maybe it is not even useful to us.)
     public String getConnectionAttributes() {
@@ -55,18 +93,10 @@ public class ScyllaDBConfig {
 
     public String getHostName() {
 
-        // here i'll have to return the X nodes?
-
-        if (postgresql_host == null) {
-            if (postgresql_connection_uri != null) {
-                URI uri = URI.create(postgresql_connection_uri);
-                if (uri.getHost() != null) {
-                    return uri.getHost();
-                }
-            }
-            return "localhost";
+        if (this.scylladb_host == null) {
+            return "Error"; // TODO: improve error handling
         }
-        return postgresql_host;
+        return this.scylladb_host;
     }
 
     public ArrayList<InetSocketAddress> getScyllaNodes() {
@@ -76,8 +106,9 @@ public class ScyllaDBConfig {
             for (String node : this.scylladb_nodes) {
                 // split for :
                 // get url, port
-                String nodeUrl = node.split(":")[0];
-                String nodePort = node.split(":")[1];
+                String[] splittedNode = node.split(":");
+                String nodeUrl = splittedNode[0];
+                String nodePort = splittedNode[1];
 
                 scyllaNodes.add(new InetSocketAddress(InetAddress.getByName(nodeUrl).toString().split("/")[1], nodePort.toInteger()));
             }
@@ -87,58 +118,25 @@ public class ScyllaDBConfig {
 
     }
 
-    public int getPort() {
-
-        // here i'll have to return an array of the ports of the scylla nodes
-
-        if (postgresql_port == -1) {
-            if (postgresql_connection_uri != null) {
-                URI uri = URI.create(postgresql_connection_uri);
-                return uri.getPort();
-            }
-            return 5432;
-        }
-        return postgresql_port;
-    }
-
     public String getUser() {
-        // self explanatory
-        if (postgresql_user == null) {
-            if (postgresql_connection_uri != null) {
-                URI uri = URI.create(postgresql_connection_uri);
-                String userInfo = uri.getUserInfo();
-                if (userInfo != null) {
-                    String[] userInfoArray = userInfo.split(":");
-                    if (userInfoArray.length > 0 && !userInfoArray[0].equals("")) {
-                        return userInfoArray[0];
-                    }
-                }
-            }
-            return null;
+        if (this.scylladb_user != null) {
+            return this.scylladb_user;
+        }else {
+            return "Error"; // TODO: improve error handling
         }
-        return postgresql_user;
     }
 
     public String getPassword() {
-        // self explanatory
-        if (postgresql_password == null) {
-            if (postgresql_connection_uri != null) {
-                URI uri = URI.create(postgresql_connection_uri);
-                String userInfo = uri.getUserInfo();
-                if (userInfo != null) {
-                    String[] userInfoArray = userInfo.split(":");
-                    if (userInfoArray.length > 1 && !userInfoArray[1].equals("")) {
-                        return userInfoArray[1];
-                    }
-                }
-            }
-            return null;
+        if (this.scylladb_password != null) {
+            return this.scylladb_password;
+        }else {
+            return "Error"; // TODO: improve error handling
         }
-        return postgresql_password;
     }
 
+    // maybe not useful?
+    /*
     public String getDatabaseName() {
-        // scyllaDBs instances don't really have a name...
         if (postgresql_database_name == null) {
             if (postgresql_connection_uri != null) {
                 URI uri = URI.create(postgresql_connection_uri);
@@ -154,6 +152,7 @@ public class ScyllaDBConfig {
         }
         return postgresql_database_name;
     }
+    */
 
     public String getConnectionURI() {
         return postgresql_connection_uri;
@@ -197,8 +196,8 @@ public class ScyllaDBConfig {
 
     public String getPasswordResetTokensTable() {
         String tableName = "emailpassword_pswd_reset_tokens";
-        if (postgresql_emailpassword_pswd_reset_tokens_table_name != null) {
-            return addSchemaToTableName(postgresql_emailpassword_pswd_reset_tokens_table_name);
+        if (scylladb_emailpassword_pswd_reset_tokens_table_name != null) {
+            return addSchemaToTableName(scylladb_emailpassword_pswd_reset_tokens_table_name);
         }
         return addSchemaAndPrefixToTableName(tableName);
     }
@@ -230,7 +229,6 @@ public class ScyllaDBConfig {
     public String getPasswordlessUsersTable() {
         String tableName = "passwordless_users";
         return addSchemaAndPrefixToTableName(tableName);
-
     }
 
     public String getPasswordlessDevicesTable() {
@@ -295,6 +293,7 @@ public class ScyllaDBConfig {
         return addSchemaToTableName(name);
     }
 
+    /*
     private String addSchemaToTableName(String tableName) {
         String name = tableName;
         if (!postgresql_table_schema.trim().equals("public")) {
@@ -302,6 +301,7 @@ public class ScyllaDBConfig {
         }
         return name;
     }
+    */
 
     void validateAndInitialise() {
         if (postgresql_connection_uri != null) {

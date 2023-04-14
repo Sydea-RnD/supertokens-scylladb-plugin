@@ -43,13 +43,6 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
         String hostName = userConfig.getHostName();
 
-        String port = userConfig.getPort() + "";
-        if (!port.equals("-1")) {
-            port = ":" + port;
-        } else {
-            port = "";
-        }
-
         String databaseName = userConfig.getDatabaseName();
 
         String attributes = userConfig.getConnectionAttributes();
