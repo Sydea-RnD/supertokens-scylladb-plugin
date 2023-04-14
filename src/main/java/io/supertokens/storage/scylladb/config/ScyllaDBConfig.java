@@ -252,32 +252,29 @@ public class ScyllaDBConfig {
         }
     }
 
-    // maybe not useful?
-    /*
-    public String getDatabaseName() {
-        if (postgresql_database_name == null) {
-            if (postgresql_connection_uri != null) {
-                URI uri = URI.create(postgresql_connection_uri);
-                String path = uri.getPath();
-                if (path != null && !path.equals("") && !path.equals("/")) {
-                    if (path.startsWith("/")) {
-                        return path.substring(1);
-                    }
-                    return path;
-                }
-            }
-            return "supertokens";
-        }
-        return postgresql_database_name;
-    }
-    */
-
     public String getConnectionURI() {
         return postgresql_connection_uri;
     }
 
-    void validateAndInitialise() {
+    public void validateAndInitialise() throws QuitProgramFromPluginException {
         // this method has to check if all the mandatory parameters are inserted and valid
+
+        if(this.scylladb_host == null) {
+            throw new QuitProgramFromPluginException("'scylladb_host' is not set, please set it and retry");
+        }
+
+        if(this.scylladb_user == null || this.scylladb_password == null) {
+            throw new QuitProgramFromPluginException("Your ScyllaDB credentials are not valid, please set them correctly and retry");
+        }
+
+        if(this.scylladb_nodes == null) {
+            throw new QuitProgramFromPluginException("Your ScyllaDB nodes are not set, please set them and retry");
+        }
+
+        if(this.scylladb_hosted_zone == null) {
+            throw new QuitProgramFromPluginException("Your ScyllaDB hosted zone is not set, please set it and retry");
+        }
+
     }
 
 }

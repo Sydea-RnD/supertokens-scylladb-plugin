@@ -41,23 +41,6 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
         ScyllaDBConfig userConfig = Config.getConfig(start);
 
-        String hostName = userConfig.getHostName();
-
-        String databaseName = userConfig.getDatabaseName();
-
-        String attributes = userConfig.getConnectionAttributes();
-        if (!attributes.equals("")) {
-            attributes = "?" + attributes;
-        }
-
-        if (userConfig.getUser() != null) {
-            // config.setUsername(userConfig.getUser());
-        }
-
-        if (userConfig.getPassword() != null && !userConfig.getPassword().equals("")) {
-            // config.setPassword(userConfig.getPassword());
-        }
-
         this.session = CqlSession.builder()
                 .withAuthProvider(new ProgrammaticPlainTextAuthProvider(userConfig.getUser(), userConfig.getPassword())
                 .withLocalDataCenter(userConfig.getLocalDataCenter())
