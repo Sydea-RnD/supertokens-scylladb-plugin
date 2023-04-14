@@ -1,9 +1,5 @@
 package io.supertokens.storage.scylladb;
 
-// turns out that Hikari is pretty much useless for our case, as JDBC is basically only for SQL DBs.
-// import com.zaxxer.hikari.HikariConfig;
-// import com.zaxxer.hikari.HikariDataSource;
-
 import io.supertokens.pluginInterface.exceptions.QuitProgramFromPluginException;
 import io.supertokens.storage.scylladb.config.Config;
 import io.supertokens.storage.scylladb.config.ScyllaDBConfig;
@@ -22,12 +18,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.net.InetSocketAddress;
-
-
-/*
-* Basically we have to modify the entire class, as it uses Hikari for the connection to the database.
-* Since Hikari is a JDBC Connection pool, it is no useful to us. JDBC is for SQL Databases.
-*/
 
 public class ConnectionPool extends ResourceDistributor.SingletonResource {
 

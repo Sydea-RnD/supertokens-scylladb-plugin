@@ -21,27 +21,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.supertokens.storage.postgresql.PreparedStatementValueSetter.NO_OP_SETTER;
-import static io.supertokens.storage.postgresql.ProcessState.PROCESS_STATE.CREATING_NEW_TABLE;
-import static io.supertokens.storage.postgresql.ProcessState.getInstance;
-import static io.supertokens.storage.postgresql.QueryExecutorTemplate.execute;
-import static io.supertokens.storage.postgresql.QueryExecutorTemplate.update;
-import static io.supertokens.storage.postgresql.config.Config.getConfig;
-import static io.supertokens.storage.postgresql.queries.EmailPasswordQueries.getQueryToCreatePasswordResetTokenExpiryIndex;
-import static io.supertokens.storage.postgresql.queries.EmailPasswordQueries.getQueryToCreatePasswordResetTokensTable;
-import static io.supertokens.storage.postgresql.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTable;
-import static io.supertokens.storage.postgresql.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTokenExpiryIndex;
-import static io.supertokens.storage.postgresql.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTokensTable;
-import static io.supertokens.storage.postgresql.queries.JWTSigningQueries.getQueryToCreateJWTSigningTable;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateCodeCreatedAtIndex;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateCodeDeviceIdHashIndex;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateCodesTable;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateDeviceEmailIndex;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateDevicePhoneNumberIndex;
-import static io.supertokens.storage.postgresql.queries.PasswordlessQueries.getQueryToCreateDevicesTable;
-import static io.supertokens.storage.postgresql.queries.SessionQueries.getQueryToCreateAccessTokenSigningKeysTable;
-import static io.supertokens.storage.postgresql.queries.SessionQueries.getQueryToCreateSessionInfoTable;
-import static io.supertokens.storage.postgresql.queries.UserMetadataQueries.getQueryToCreateUserMetadataTable;
+import static io.supertokens.storage.scylladb.PreparedStatementValueSetter.NO_OP_SETTER;
+import static io.supertokens.storage.scylladb.ProcessState.PROCESS_STATE.CREATING_NEW_TABLE;
+import static io.supertokens.storage.scylladb.QueryExecutorTemplate.execute;
+import static io.supertokens.storage.scylladb.ProcessState.getInstance;
+import static io.supertokens.storage.scylladb.QueryExecutorTemplate.update;
+import static io.supertokens.storage.scylladb.config.Config.getConfig;
+import static io.supertokens.storage.scylladb.queries.EmailPasswordQueries.getQueryToCreatePasswordResetTokenExpiryIndex;
+import static io.supertokens.storage.scylladb.queries.EmailPasswordQueries.getQueryToCreatePasswordResetTokensTable;
+import static io.supertokens.storage.scylladb.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTable;
+import static io.supertokens.storage.scylladb.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTokenExpiryIndex;
+import static io.supertokens.storage.scylladb.queries.EmailVerificationQueries.getQueryToCreateEmailVerificationTokensTable;
+import static io.supertokens.storage.scylladb.queries.JWTSigningQueries.getQueryToCreateJWTSigningTable;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateCodeCreatedAtIndex;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateCodeDeviceIdHashIndex;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateCodesTable;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateDeviceEmailIndex;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateDevicePhoneNumberIndex;
+import static io.supertokens.storage.scylladb.queries.PasswordlessQueries.getQueryToCreateDevicesTable;
+import static io.supertokens.storage.scylladb.queries.SessionQueries.getQueryToCreateAccessTokenSigningKeysTable;
+import static io.supertokens.storage.scylladb.queries.SessionQueries.getQueryToCreateSessionInfoTable;
+import static io.supertokens.storage.scylladb.queries.UserMetadataQueries.getQueryToCreateUserMetadataTable;
 
 
 public class GeneralQueries {
