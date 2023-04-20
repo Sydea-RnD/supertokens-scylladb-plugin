@@ -47,23 +47,175 @@ import static io.supertokens.storage.scylladb.queries.UserMetadataQueries.getQue
 public class GeneralQueries {
 
     private static boolean doesTableExist(Start start, String tableName) {
-
+        try {
+            String QUERY = "SELECT 1 FROM " + tableName + " LIMIT 1";
+            // execute query and return true or false
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
     }
 
     static String getQueryToCreateUsersTable(Start start) {
+        String keyspace = Config.getConfig(start).getKeyspace();
+        String usersTable = Config.getConfig(start).getUsersTable();
 
+        return "CREATE TABLE IF NOT EXISTS " + usersTable + " ("
+                + "user_id TEXT NOT NULL "
+                + "recipe_id VARCHAR NOT NULL "
+                + "time_joined BIGINT NOT NULL "
+                + "PRIMARY KEY (user_id));";
     }
 
     static String getQueryToCreateUserPaginationIndex(Start start) {
-
+        // TODO: create statement
     }
 
     private static String getQueryToCreateKeyValueTable(Start start) {
+        String keyspace = Config.getConfig(start).getKeyspace();
+        String keyValueTable = Config.getConfig(start).getKeyValueTable();
 
+        return "CREATE TABLE IF NOT EXISTS " + keyValueTable + " ("
+                + "name VARCHAR "
+                + "value TEXT "
+                + "created_at_time BIGINT "
+                + "PRIMARY KEY (name)"
+                + " );";
     }
 
     public static void createTablesIfNotExists(Start start) throws StorageQueryException {
-        // it throws SQLException as well, but as scylla is noSQL, we dont have that
+
+        int numberOfRetries = 0;
+        boolean retry = true;
+
+        while(retry) {
+            retry = false;
+
+            if(!doesTableExist(start, Config.getConfig(start).getKeyValueTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if (!doesTableExist(start, Config.getConfig(start).getUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserLastActiveTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getAccessTokenSigningKeysTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getSessionInfoTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getEmailPasswordUsersTable())) {
+                 getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getPasswordResetTokensTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getEmailVerificationTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getEmailVerificationsTokenTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getThirdPartyUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getJWTSigningKeysTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getPasswordlessUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getPasswordlessDevicesTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getPasswordlessCodesTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserMetadataTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserMetadataTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserRolesPermissionTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserRolesTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getUserIdMapping())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getDashboardUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getDashboardSessionsTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getTotpUsersTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).geTotpUserDevicesTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+
+            if(!doesTableExist(start, Config.getConfig(start).getTotpUsedCodesTable())) {
+                getInstance(start).addState(CREATING_NEW_TABLE, null);
+                // execute query
+            }
+        }
     }
 
     @TestOnly

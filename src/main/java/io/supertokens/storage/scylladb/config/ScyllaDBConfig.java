@@ -28,6 +28,9 @@ public class ScyllaDBConfig {
     private String scylladb_password = null;
 
     @JsonProperty
+    private String scylladb_custom_keyspace = null;
+
+    @JsonProperty
     private String scylladb_region = null;
 
     @JsonProperty
@@ -114,6 +117,8 @@ public class ScyllaDBConfig {
     public String getSessionInfoTable(){
         return this.SESSION_INFO_TABLE;
     }
+
+    public String getKeySpace() { return this.scylladb_custom_keyspace; }
 
     public String getEmailPasswordUsersTable() {
         return this.EMAIL_PASSWORD_USERS_TABLE;

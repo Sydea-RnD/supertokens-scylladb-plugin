@@ -4,19 +4,30 @@ import io.supertokens.pluginInterface.exceptions.StorageQueryException;
 
 public interface QueryExecutorTemplate {
 
-    static <T> T execute(Start start, String QUERY, PreparedStatementValueSetter setter, ResultSetValueExtractor<T> mapper) throws StorageQueryException {
-        // gets connection through connectionPool and then executes
+    static ResultSet executeSelect(String QUERY) {
+
+        CqlSession dbSession = ConnectionPool.getSession();
+        ResultSet rs;
+
+        try {
+            rs = dbSession.execute(QUERY);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            rs = null;
+        }
+
+        return rs;
     }
 
-    static <T> T execute(Connection con, String QUERY, PreparedStatementValueSetter setter, ResultSetValueExtractor<T> mapper) throws StorageQueryException {
-        // prepares statement and, through the setter, executes it
-    }
+    static void execute(String QUERY) {
 
-    static  int update(Start start, String QUERY, PreparedStatementValueSetter setter) throws StorageQueryException {
-        // gets a connection through connectionPool and then updates
-    }
+        CqlSession dbSession = ConnectionPool.getSession();
 
-    static int update(Connection con, String QUERY, PreparedStatementValueSetter setter) throws StorageQueryException {
-        // prepares statement and, through the setter, executes it
+        try {
+            dbSession.execute(QUERY);
+        } catch (Exception e) {
+            Systemp.out.println(e.getMessage());
+        }
+
     }
 }
