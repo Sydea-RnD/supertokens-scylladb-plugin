@@ -24,6 +24,10 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
     private static final String RESOURCE_KEY = "io.supertokens.storage.scylladb.ConnectionPool";
     private static final CqlSession session = null;
 
+    private static final String NODE_1 = env.getNode1();
+    private static final String NODE_2 = env.getNode2();
+    private static final String NODE_3 = env.getNode3();
+
     private ConnectionPool(Start start) {
         if (!start.enabled) {
             throw new RuntimeException("Connection to refused"); // emulates exception thrown by Hikari
@@ -31,10 +35,33 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
 
         ScyllaDBConfig userConfig = Config.getConfig(start);
 
-        this.session = CqlSession.builder()
-                .withAuthProvider(new ProgrammaticPlainTextAuthProvider(userConfig.getUser(), userConfig.getPassword())
-                .withLocalDataCenter(userConfig.getLocalDataCenter())
-                .addContactPoints(userConfig.getScyllaNodes()).build());
+        ArrayList<InetSocketAddress> nodesArray = new ArrayList<>();
+
+        try {
+            nodesArray.add(new InetSocketAddress(InetAddress.getByName(NODE_1).toString().split("/")[1], PORT));
+            nodesArray.add(new InetSocketAddress(InetAddress.getByName(NODE_2).toString().split("/")[1], PORT));
+            nodesArray.add(new InetSocketAddress(InetAddress.getByName(NODE_3).toString().split("/")[1], PORT));
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            DriverConfigLoader driverConfigLoader = DriverConfigLoader.programmaticBuilder()
+                    .withString(DefaultDriverOption.LOAD_BALANCING_POLICY_CLASS, "DcInferringLoadBalancingPolicy")
+                    .build();
+
+            CqlSession session = CqlSession.builder()
+                    .addContactPoints(nodesArray)
+                    .withLocalDatacenter("AWS_EU_WEST_1")
+                    .withAuthCredentials(env.getUsername(), env.getPwd())
+                    .withConfigLoader(driverConfigLoader)
+                    .withKeyspace("supertokens")
+                    .build();
+
+            mySession = session;
+        } catch (Exception e) {
+            throw new SQLException(e.toString());
+        }
     }
 
     private static int getTimeToWaitToInit(Start start) {

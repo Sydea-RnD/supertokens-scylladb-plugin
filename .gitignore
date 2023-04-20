@@ -1,2 +1,3 @@
 .DS_Store
 .idea
+src/main/java/io/supertokens/storage/scylladb/env.java
