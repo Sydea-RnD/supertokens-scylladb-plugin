@@ -192,12 +192,6 @@ public class ScyllaDBConfig {
         return this.TOTP_USED_CODES_TABLE;
     }
 
-    /*
-    public int getConnectionPoolSize() {
-        return postgresql_connection_pool_size;
-    }
-    */
-
     // TODO: modify this function to work with scylla nodes (maybe it is not even useful to us.)
     public String getConnectionAttributes() {
         if (postgresql_connection_uri != null) {
@@ -239,6 +233,7 @@ public class ScyllaDBConfig {
             System.out.println(e.getMessage());
         }
 
+        return scyllaNodes;
     }
 
     public String getUser() {
