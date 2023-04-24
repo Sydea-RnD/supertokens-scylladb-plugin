@@ -4,8 +4,7 @@ import io.supertokens.storeage.scylladb.Start;
 import io.supertokens.pluginInterface.exceptions.StorageQueryException;
 import io.supertokens.storage.scylladb.config.Config;
 
-import static io.supertokens.storage.scylladb.QueryExecutorTemplate.execute;
-import static io.supertokens.storage.scylladb.QueryExecutorTemplate.update;
+import static io.supertokens.storage.scylladb.QueryExecutorTemplate;
 
 public class ActiveUsersQueries {
 

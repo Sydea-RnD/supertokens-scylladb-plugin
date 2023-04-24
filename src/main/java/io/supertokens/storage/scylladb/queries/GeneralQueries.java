@@ -43,6 +43,8 @@ import static io.supertokens.storage.scylladb.queries.SessionQueries.getQueryToC
 import static io.supertokens.storage.scylladb.queries.SessionQueries.getQueryToCreateSessionInfoTable;
 import static io.supertokens.storage.scylladb.queries.UserMetadataQueries.getQueryToCreateUserMetadataTable;
 
+import static io.supertokens.storage.scylladb.QueryExecutorTemplate;
+
 
 public class GeneralQueries {
 

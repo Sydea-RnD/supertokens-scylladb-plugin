@@ -2,6 +2,8 @@ package io.supertokens.storage.scylladb;
 
 import ch.qos.logback.classic.Logger;
 import com.google.gson.JsonObject;
+
+// gotta check and modify every implementation of the plugin interface
 import io.supertokens.pluginInterface.*;
 import io.supertokens.pluginInterface.authRecipe.AuthRecipeUserInfo;
 import io.supertokens.pluginInterface.dashboard.DashboardSearchTags;
@@ -59,6 +61,7 @@ import io.supertokens.storage.postgresql.config.Config;
 import io.supertokens.storage.postgresql.config.ScyllaDBConfig  ;
 import io.supertokens.storage.postgresql.output.Logging;
 import io.supertokens.storage.postgresql.queries.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
@@ -75,22 +78,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-// TODO: throw away everything related to Hikari, as it is not useful to noSQL dbs
-
 public class Start
-        implements SessionSQLStorage, EmailPasswordSQLStorage, EmailVerificationSQLStorage, ThirdPartySQLStorage,
-        JWTRecipeSQLStorage, PasswordlessSQLStorage, UserMetadataSQLStorage, UserRolesSQLStorage, UserIdMappingStorage,
-        DashboardSQLStorage, TOTPSQLStorage, ActiveUsersStorage {
+        implements SessionNoSQLStorage_1, EmailPasswordNoSQLStorage, EmailVerificationNoSQLStorage, ThirdPartyNoSQLStorage,
+        JWTRecipeSQLStorage_1, PasswordlessNoSQLStorage, UserMetadataNoSQLStorage, UserRolesNoSQLStorage, UserIdMappingStorage,
+        DashboardNoSQLStorage, TOTPNoSQLStorage, ActiveUsersStorage {
 
-    private static final Object appenderLock = new Object();
+    private static final Object appenderLock = new Object(); // related to logging
     public static boolean silent = false;
+
     private ResourceDistributor resourceDistributor = new ResourceDistributor();
     private String processId;
-    private HikariLoggingAppender appender = new HikariLoggingAppender(this);
+
     private static final String APP_ID_KEY_NAME = "app_id";
     private static final String ACCESS_TOKEN_SIGNING_KEY_NAME = "access_token_signing_key";
     private static final String REFRESH_TOKEN_KEY_NAME = "refresh_token_key";
+    
     public static boolean isTesting = false;
+    
     boolean enabled = true;
     Thread mainThread = Thread.currentThread();
     private Thread shutdownHook;
@@ -111,7 +115,7 @@ public class Start
 
     @Override
     public STORAGE_TYPE getType() {
-        return STORAGE_TYPE.NOSQL_1;
+        return STORAGE_TYPE.NOSQL_SCYLLA;
     }
 
     @Override
