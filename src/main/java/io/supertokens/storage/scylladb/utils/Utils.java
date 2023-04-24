@@ -13,4 +13,18 @@ public class Utils {
         return baos.toString();
 
     }
+    
+    public static String getIndexNameFromTableName(String schema, String tableName, String column, String suffix) {
+        
+        StringBuilder indexName = new StringBuilder(tableName);
+        
+        if(tableName.startsWith(schema) == true) {
+            // We also have to delete the . after the schema name
+            indexName.delete(0, schema.length() + 1);
+        }
+        
+        indexName.append("_").append(suffix);
+        
+        return indexName.toString();
+    }
 }

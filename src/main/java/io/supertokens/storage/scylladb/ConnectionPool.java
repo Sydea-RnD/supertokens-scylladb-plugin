@@ -140,21 +140,19 @@ public class ConnectionPool extends ResourceDistributor.SingletonResource {
         }
     }
 
-    public static Connection getConnection(Start start) throws SQLException {
+    public static Connection getSession(Start start) throws SQLException {
         if (getInstance(start) == null) {
             throw new QuitProgramFromPluginException("Please call initPool before getConnection");
         }
         if (!start.enabled) {
             throw new SQLException("Storage layer disabled");
         }
-        return ConnectionPool.hikariDataSource.getConnection();
+        return ConnectionPool.session();
     }
 
     static void close(Start start) {
         if (getInstance(start) == null) {
             return;
         }
-        ConnectionPool.hikariDataSource.close();
-        ConnectionPool.hikariDataSource = null;
     }
 }
