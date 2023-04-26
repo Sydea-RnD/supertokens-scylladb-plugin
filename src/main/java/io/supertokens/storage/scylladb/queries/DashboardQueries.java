@@ -9,6 +9,8 @@ import io.supertokens.storage.scylladb.Start;
 import io.supertokens.storage.scylladb.config.Config;
 import io.supertokens.storage.scylladb.utils.Utils;
 import io.supertokens.storage.scylladb.ConnectionPool;
+import static java.lang.System.currentTimeMillis;
+
 
 public class DashboardQueries {
     
@@ -25,7 +27,7 @@ public class DashboardQueries {
             + "PRIMARY KEY(user_id);";
         
         final String createIndexStmt = "CREATE INDEX IF NOT EXISTS "
-            + Utils.getIndexNameFromTableName(dashboardUsersTable)
+            + Utils.getIndexNameFromTableName(schema, dashboardUsersTable, null, "index")
             + " ON "
             + (schema + "." + dashboardUsersTable)
             + "(email)";
@@ -272,7 +274,7 @@ public class DashboardQueries {
             + " ALLOW FILTERING;";
                 
         try {
-            QueryExecutorTemplate.execute(createDashboardSessionStmt);
+            QueryExecutorTemplate.execute(deleteExpiredSessionsStmt);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return false;
