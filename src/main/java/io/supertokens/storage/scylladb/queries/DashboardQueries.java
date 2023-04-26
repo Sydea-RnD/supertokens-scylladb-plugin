@@ -11,6 +11,7 @@ import io.supertokens.storage.scylladb.utils.Utils;
 import io.supertokens.storage.scylladb.ConnectionPool;
 import static java.lang.System.currentTimeMillis;
 
+import com.datastax.oss.driver.api.core.cql.*;
 
 public class DashboardQueries {
     

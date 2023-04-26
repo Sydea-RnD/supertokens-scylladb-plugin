@@ -200,4 +200,151 @@ public class EmailPasswordQueries {
         
     }
     
+    public static PasswordResetTokenInfo[] getAllPasswordResetTokenInfoForUser(Start start, String userId) 
+        throws SQLException, StorageQueryException {
+            
+        final String tableName = Config.getConfig(start).getPasswordResetTokensTable();
+        final String queryStmt = "SELECT user_id, token_id, token_expiry FROM "
+            + tableName
+            + " WHERE user_id = "
+            + "'" + userId + "';";
+        
+        ResultSet rs;        
+        try {
+            rs = QueryExecutorTemplate.executeTemplate(queryStmt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        // TODO: get the data from rs and put it in a PasswordResetTokenInfo[]
+        
+    }
+    
+    public static UserInfo getUserInfoUsingId(Start start, String userId) 
+        throws SQLException, StorageQueryException {
+        
+        String tableName = Config.getConfig(start).getEmailPasswordUsersTable();
+        String queryStmt = "" // query set as untranslatable, will have to find a work around
+        
+    }
+    
+    public static PasswordResetTokenInfo getPasswordResetTokenInfo(Start start, String tokenId) 
+        throws SQLException, StorageQueryException {
+        
+        String tableName = Config.getConfig(start).getPasswordResetTokensTable(); 
+        final String queryStmt = "SELECT user_id, token_id, token_expiry FROM "
+            + tableName
+            + " WHERE token_id = "
+            + "'" + tokenId + "';";
+        
+        ResultSet rs;
+        
+        try {
+            rs = QueryExecutorTemplate.executeStatement(queryStmt);    
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        // TODO: take the data from rs and return it in a PasswordResetTokenInfo object
+    }
+    
+    public static boolean addPasswordResetToken(Start start, String userId, String tokenHash, long expiry) 
+        throws SQLException, StorageQueryException {
+        
+        String tableName = Config.getConfig(start).getPasswordResetTokensTable();
+        final String queryStmt = "INSERT INTO "
+            + tableName 
+            + "(user_id, token_id, token_expiry) VALUES ("
+            + "'" + userId + "',"
+            + "'" + tokenHash + "',"
+            + "'" + (String) expiry + "');";
+            
+        try {
+            QueryExecutorTemplate.execute(queryStmt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
+        return true;
+        
+    }
+    
+    public static boolean signUp(Start start, String userId, String email, String passwordHash, long timeJoined) 
+        throws StorageQueryException {
+        
+        final String usersTableName = Config.getConfig(start).getUsersTable();
+        final String emailPasswordUsersTableName = Config.getConfig(start).getEmailPasswordUsersTable();
+        
+        final String insertIntoUsersTable = "INSERT INTO "
+            + usersTableName 
+            + " (user_id, recipe_id, time_joined) VALUES ("
+            + "'" + userId + "',"
+            + "'" + EMAIL_PASSWORD.toString() + "',"
+            + "'" + (String) timeJoined + "',";
+        
+        final String insertIntoEmailPasswordUsersTable = "INSERT INTO "
+            + emailPasswordUsersTableName 
+            + "(user_id, email, password_hash, time_joined) VALUES ("
+            + "'" + userId + "',"
+            + "'" + email + "',"
+            + "'" + passwordHash + "',"
+            + "'" + (String) timeJoined + "';";
+            
+        try { 
+            QueryExecutorTemplate.execute(insertIntoUsersTable);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
+        try { 
+            QueryExecutorTemplate.execute(insertIntoEmailPasswordUsersTable);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
+        return false;
+        
+    }
+    
+    public static boolean deleteUser(Start start, String userId) 
+        throws StorageQueryException {
+        
+        final String usersTableName = Config.getConfig(start).getUsersTable();
+        final String emailPasswordUsersTableName = Config.getConfig(start).getEmailPasswordUsersTable();
+        
+        final String deleteFromUsersTableStmt = "DELETE FROM "
+            + usersTableName 
+            + " WHERE user_id = "
+            + "'" + userId + "'"
+            + " AND recipe_id = "
+            + "'" + EMAIL_PASSWORD.toString() + "';";
+            
+        final String deleteFromEmailPasswordUsersTableStmt = "DELETE FROM "
+            + emailPasswordUsersTableName
+            + " WHERE user_id = "
+            + "'" + userId + "';";
+            
+        try {
+            QueryExecutorTemplate.execute(deleteFromUsersTableStmt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
+        try {
+            QueryExecutorTemplate.execute(deleteFromEmailPasswordUsersTableStmt);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        
+        return true;
+        
+    }
+    
+    
+    
 }
