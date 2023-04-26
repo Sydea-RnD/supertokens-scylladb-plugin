@@ -14,6 +14,10 @@ import static io.supertokens.storage.postgresql.QueryExecutorTemplate;
 import static io.supertokens.storage.postgresql.config.Config;
 import static java.lang.System.currentTimeMillis;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class EmailPasswordQueries {
     
     public static boolean getQueryToCreateUsersTable(Start start) {
@@ -345,6 +349,64 @@ public class EmailPasswordQueries {
         
     }
     
+    public static UserInfo getUserInfoUsingId(Start start, String userId) 
+        throws SQLException, StorageQueryException {
+        
+        List<String> input = new ArrayList<>();
+        input.add(userId);
+        List<UserInfo> result = getUsersInfoUsingIdList(start, input);
+        if (result.size() == 1) {
+            return result.get(0);
+        }
+        
+        return null;
+        
+    }
     
+    public static List<UserInfo> getUsersInfoUsingIdList(Start start, List<String> ids) 
+        throws SQLException, StorageQueryException {
+        
+        if(ids.size() > 0) {
+            StringBuilder query = new StringBuilder("SELECT user_id, email, password_hash, time_joined FROM "
+                + Config.getConfig(start).getEmailPasswordUsersTable());
+            
+            query.append(" WHERE user_id IN (");
+            for (int i = 0; i < ids.size(); i++) {
+                query.append(ids.get(i));
+                if(i != ids.size() - 1) {
+                    query.append(",");
+                }
+            }
+            query.append(");");
+            
+            ResultSet rs;
+            try {
+                rs = QueryExecutorTemplate.executeSelect(query);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            // TODO: take data and put it in a list
+        }
+        
+    }
+    
+    public static UserInfo getUserInfoUsingEmail(Start start, String email) 
+        throws StorageQueryException, SQLException {
+        
+        final String query = "SELECT user_id, email, password_hash, time_joined FROM "
+            + Config.getConfig(start).getEmailPasswordUsersTable()
+            + " WHERE email = "
+            + "'" + email + "';";
+        
+        ResultSet rs;
+        try {
+            rs = QueryExecutorTemplate.executeSelect(query);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        // TODO: take data and put it in UserInfo
+        
+    }
     
 }
