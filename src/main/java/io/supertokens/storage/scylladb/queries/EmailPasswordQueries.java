@@ -129,7 +129,8 @@ public class EmailPasswordQueries {
             + passwordResetTokensTable 
             + " WHERE token_expiry < "
             + (String) currentTimeMillis
-            + " ALLOW FILTERING;";
+            + ";";
+            // + " ALLOW FILTERING;";
         
         try {
             QueryExecutorTemplate.execute(deleteExpiredTokens);

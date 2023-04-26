@@ -107,10 +107,10 @@ public class DashboardQueries {
             + Config.getConfig(start).getDashboardUsersTable()
             + " (user_id, email, password_hash, time_joined)"
             + " VALUES ("
-            + userId + ", "
-            + email + ", "
-            + passwordHash + ", "
-            + (String) timeJoined
+            + "'" + userId + "', "
+            + "'" + email + "', "
+            + "'" + passwordHash + "', "
+            + "'" + (String) timeJoined "', "
             + ");";
             
         try {
@@ -127,7 +127,7 @@ public class DashboardQueries {
         final String deleteUserStmt = "DELETE FROM "
             + Config.getConfig(start).getDashboardUsersTable()
             + " WHERE user_id = "
-            + userId
+            + "'" + userId + "'"
             + ";";
         
         try {
@@ -150,9 +150,9 @@ public class DashboardQueries {
         
         String selectUserStmt = "SELECT * FROM "
             + Config.getConfig(start).getDashboardUsersTable()
-            + " WHERE user_id = '"
-            + userId
-            + "';";
+            + " WHERE user_id = "
+            + "'" + userId + "'"
+            + ";";
         
         try {
             QueryExecutorTemplate.executeSelect(selectUserStmt);
@@ -168,11 +168,11 @@ public class DashboardQueries {
         throws SQLException, StorageQueryException {
   
         String updateEmailStmt = "UPDATE " + Config.getConfig(start).getDashboardUsersTable()
-              + " SET email = '"
-              + newEmail
+              + " SET email = "
+              + "'" + newEmail + "'"
               + "' WHERE user_id = '"
-              + userId
-              + "';";
+              + "'" + userId + "'"
+              + ";";
         
         try {
             QueryExecutorTemplate.execute(updateEmailStmt);
@@ -188,11 +188,11 @@ public class DashboardQueries {
         throws SQLException, StorageQueryException {
   
         String updateEmailStmt = "UPDATE " + Config.getConfig(start).getDashboardUsersTable()
-              + " SET password_hash = '"
-              + newPwdHash
-              + "' WHERE user_id = '"
-              + userId
-              + "';";
+              + " SET password_hash = "
+              + "'" + newPwdHash + "'"
+              + "' WHERE user_id = "
+              + "'" + userId + "'"
+              + ";";
         
         try {
             QueryExecutorTemplate.execute(updateEmailStmt);
@@ -213,8 +213,8 @@ public class DashboardQueries {
             + "VALUES ("
             + "'" + userId + "', "
             + "'" + sessionId + "', "
-            + timeCreated + ", "
-            + expiry 
+            + (String) timeCreated + ", "
+            + (String) expiry
             + ");";
         
         try {
@@ -231,9 +231,9 @@ public class DashboardQueries {
         
         String getSessionInfoStmt = "SELECT * FROM "
             + Config.getConfig(start).getDashboardSessionsTable()
-            + " WHERE session_id = '"
-            + sessionId
-            + "';";
+            + " WHERE session_id = "
+            + "'" + sessionId + "', "
+            + ";";
             
         
         try {
@@ -250,9 +250,9 @@ public class DashboardQueries {
         
         String getAllSessionsStmt = "SELECT * FROM "
             + Config.getConfig(start).getDashboardSessionsTable()
-            + " WHERE user_id = '"
-            + userId
-            + "';";
+            + " WHERE user_id = "
+            + "'" + userId + "', "
+            + ";";
         
         try {
             QueryExecutorTemplate.executeSelect(getAllSessionsStmt);
@@ -272,7 +272,8 @@ public class DashboardQueries {
             + Config.getConfig(start).getDashboardSessionsTable()
             + " WHERE expiry < "
             + (String) currentTimeMillis
-            + " ALLOW FILTERING;";
+            + ";";
+            // + " ALLOW FILTERING;";
                 
         try {
             QueryExecutorTemplate.execute(deleteExpiredSessionsStmt);
